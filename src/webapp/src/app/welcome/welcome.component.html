@@ -1,0 +1,20 @@
+<div class="central-panel">
+  Welcome {{userName}}
+</div>
+<div class="central-panel centered">
+  <p>Do you want a battle?</p>
+  <p>Send a request to your opponent</p>
+  <input [(ngModel)]="opponentName" [disabled]="connectingOpponent" placeholder="opponent"><br>
+  <button (click)="wantToPlayClick()" [hidden]="connectingOpponent">I want to play!</button>
+  <p [hidden]="!connectingOpponent" class="centered">Waiting for opponent reply...</p>
+  <button (click)="cancelRequestClick()" [hidden]="!connectingOpponent">Cancel Request</button>
+</div>
+<div [hidden]="connectingOpponent" class="central-panel">
+    <p [hidden]="battleRequests.length > 0" class="central-panel centered">You don't have battle requests</p>
+    <div *ngFor="let req of battleRequests" [hidden]="battleRequests.length < 1">
+      <div>{{req.userName}} is requiering to battle, <a (click)="acceptBattle(req.userName)" href="#">fight</a></div>
+    </div>
+</div>
+<div class="central-panel">
+  <button (click)="logOutClick()" [disabled]="connectingOpponent">Log Out</button>
+</div>

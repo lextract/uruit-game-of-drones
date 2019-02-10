@@ -1,0 +1,12 @@
+<div class="central-panel">
+  <header>
+    <h1 class="centered">Game of Drones</h1>
+  </header>
+  <section>
+    <uruit-login *ngIf="viewType == 'logIn'" (viewChanged)="onViewChanged($event)"></uruit-login>
+    <uruit-welcome *ngIf="viewType == 'welcome'" (viewChanged)="onViewChanged($event)"></uruit-welcome>
+  </section>
+  <footer>
+    John Antonio
+  </footer>
+</div>
