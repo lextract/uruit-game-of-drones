@@ -5,6 +5,7 @@
   <section>
     <uruit-login *ngIf="viewType == 'logIn'" (viewChanged)="onViewChanged($event)"></uruit-login>
     <uruit-welcome *ngIf="viewType == 'welcome'" (viewChanged)="onViewChanged($event)"></uruit-welcome>
+    <uruit-battle-field *ngIf="viewType == 'battle-field'" (viewChanged)="onViewChanged($event)"></uruit-battle-field>
   </section>
   <footer>
     John Antonio

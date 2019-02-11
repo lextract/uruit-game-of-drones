@@ -5,4 +5,5 @@
     <input [(ngModel)]="userName"  placeholder="john" />
   </label>
   <button (click)="loginClick()" >Log In</button>
+  <p [hidden]="infoShowed">{{infoMessage}}</p>
 </div>

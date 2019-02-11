@@ -1,3 +1,38 @@
-<p>
-  battle-field works!
+<p class="centered">
+  Yuo are fighting against {{opponentName}}
 </p>
+<div *ngIf="playing">
+  <p>Choose your movement</p>
+  <div class="container">
+    <div class="img-paper img-block"></div>
+    <div class="img-rock img-block"></div>
+    <div class="img-scissors img-block"></div>
+  </div>
+  <p>Waitint for a movement</p>
+  <div class="container img-block">
+    <div class="img-paper img-block"></div>
+    <div class="img-rock img-block"></div>
+    <div class="img-scissors img-block"></div>
+  </div>
+</div>
+<p class="centered">{{matchResult}}</p>
+<div>
+  <table>
+    <thead>
+      <tr>
+        <td>Round</td>
+        <td>Winner</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let round of rounds">
+        <td>{{round.player1id}}</td>
+        <td>{{round.player2id}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <div class="central-panel centered">
+    <button (click)="endBattleClick()">End battle</button>
+  </div>
+</div>
