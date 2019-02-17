@@ -2,9 +2,15 @@ export enum GameEvent {
     NewBattle = 'NEW_BATTLE',
     OpenBattleField = 'OPEN_BATTLE_FIELD',
     CloseBattleField = 'CLOSE_BATTLE_FIELD',
-    NotifyMove = 'NOTIFY_MOVE',
+    NotifyMatchResult = 'NOTIFY_MATCH_RESULT',
     NotifyWinner = 'NOTIFY_WINNER',
-    CancelBattle = 'CANCEL_BATTLE'
+    //CancelBattle = 'CANCEL_BATTLE',
+    RequestGame = 'REQUEST_GAME',
+    CancelGame = 'CANCEL_GAME',
+    StartGame = 'START_GAME',
+    StopGame = 'STOP_GAME',
+    NewMessage = 'NEW_MESSAGE',
+    MakeMove = 'MAKE_MOVE'
 }
 
 export enum MoveType {
@@ -13,7 +19,7 @@ export enum MoveType {
     Paper = 'PAPER'
 }
 export enum ViewType {
-    Login = 'LOGIN',
-    Welcome = 'WELCOME',
-    BattleField = 'BATTLE_FIELD'
+    Login = 'logIn',
+    Welcome = 'welcome',
+    BattleField = 'battle-field'
 }

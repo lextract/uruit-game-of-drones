@@ -4,7 +4,9 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 import { Game } from '../../../dto/Game';
 import * as ioClient from 'socket.io-client';
-import { GameEvent } from '../../../enums';
+import { GameEvent, MoveType } from '../../../enums';
+import { Message } from '../../../dto/Message';
+import { Match } from '../../../dto/Match';
 
 //const ioServerUrl = '/realtimegame';
 const serverApi = '/api/game';
@@ -16,87 +18,103 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class GameService {
-  private currentUser: string;
+
+  constructor(private http: HttpClient) {
+  }
+
   private socket: SocketIOClient.Socket;
-  constructor(private http: HttpClient) { }
+  private _currentGame: Game;
+  private _requestGameDispatcher: Observable<Game>;
+  private _startGameDispatcher: Observable<Game>;
+  private _cancelGameDispatcher: Observable<number>;
+  private _stopGameDispatcher: Observable<Game>;
+  private _messageDispatcher: Observable<Message>;
+  private _matchResultDispatcher: Observable<Match>;
+
+  get currentGame() {
+    return this._currentGame;
+  }
+  get requestGameDispatcher() {
+    return this._requestGameDispatcher;
+  }
+  get cancelGameDispatcher() {
+    return this._cancelGameDispatcher;
+  }
+  get startGameDispatcher() {
+    return this._startGameDispatcher;
+  }
+  get stopGameDispatcher() {
+    return this._stopGameDispatcher;
+  }
+  get messageDispatcher() {
+    return this._messageDispatcher;
+  }
+  get matchResultDispatcher() {
+    return this._matchResultDispatcher;
+  }
 
   initRealTimeApp(userName: string) {
-    this.currentUser = userName;
+    if (this.socket)
+      return;
     this.socket = ioClient({ query: { player: userName } });
-    // this.socket.on(GameEvent.NewBattle, (player, defiant) => {
-    //   console.log('player: ' +player);
-    //   console.log('defiant: ' +defiant);
-    // })
-  }
-
-  requestGame(defiant: string, opponent: string): Observable<Game> {
-    let d = { defiant: defiant, opponent: opponent };
-    return this.http.post<Game>(serverApi + '/request', d, httpOptions)
-      .pipe(
-        catchError(this.handleError<any>('requestGame'))
-      );
-  }
-
-  startGame(gameId: number): Observable<Game> {
-    return this.http.post<Game>(serverApi + '/start', { id: gameId }, httpOptions)
-      .pipe(
-        catchError(this.handleError<any>('startGame'))
-      );
-  }
-
-  cancelGame(gameId: number): Observable<Game> {
-    return this.http.post<Game>(serverApi + '/cancel', { id: gameId }, httpOptions)
-      .pipe(
-        catchError(this.handleError<any>('cancelGame'))
-      );
-  }
-  endGame(gameId: number): Observable<Game> {
-    return this.http.post<Game>(serverApi + '/end', { id: gameId }, httpOptions)
-      .pipe(
-        catchError(this.handleError<any>('endGame'))
-      );
-  }
-
-  newGamesObserver() {
-    let observable = new Observable(observer => {
-      this.socket.on(GameEvent.NewBattle, (gameId, defiant, opponent) => {
-        let game = { id: gameId, player1id: defiant, player2id: opponent } as Game;
+    this._requestGameDispatcher = new Observable<Game>(observer => {
+      this.socket.on(GameEvent.RequestGame, game => {
         observer.next(game);
       });
-    })
-    return observable;
-  }
-
-  canceledGamesObserver() {
-    let observable = new Observable(observer => {
-      this.socket.on(GameEvent.CancelBattle, gameId => {
+    });
+    this._cancelGameDispatcher = new Observable<number>(observer => {
+      this.socket.on(GameEvent.CancelGame, gameId => {
         observer.next(gameId);
       });
-    })
-    return observable;
-  }
-
-  openBattleFieldObserver() {
-    let observable = new Observable(observer => {
-      this.socket.on(GameEvent.OpenBattleField, (player1, player2) => {
-        let opponent = player1 == this.currentUser ? player1 : player2;
-        observer.next(opponent);
+    });
+    this._startGameDispatcher = new Observable<Game>(observer => {
+      this.socket.on(GameEvent.StartGame, game => {
+        this._currentGame = game;
+        observer.next(game);
       });
-    })
-    return observable;
-  }
-
-  closeBattleFieldObserver() {
-    let observable = new Observable(observer => {
-      this.socket.on(GameEvent.CloseBattleField, (player1, player2) => {
-        let ps = {player1, player2};
-        observer.next(ps);
+    });
+    this._stopGameDispatcher = new Observable<Game>(observer => {
+      this.socket.on(GameEvent.StopGame, game => {
+        this._currentGame = undefined;
+        observer.next(game);
       });
-    })
-    return observable;
+    });
+    this._messageDispatcher = new Observable<Message>(observer => {
+      this.socket.on(GameEvent.NewMessage, message => {
+        observer.next(message);
+      });
+    });
+    this._matchResultDispatcher = new Observable<Match>(observer => {
+      this.socket.on(GameEvent.NotifyMatchResult, match => {
+        observer.next(match);
+      });
+    });
   }
 
+  stopRealTimeApp(){
+    this.socket.disconnect();
+    this.socket = undefined;
+  }
 
+  requestGame(defiant: string, opponent: string) {
+    this.socket.emit(GameEvent.RequestGame, opponent);
+  }
+
+  cancelGame(gameId: number) {
+    this.socket.emit(GameEvent.CancelGame, gameId);
+  }
+
+  startGame(gameId: number) {
+    this.socket.emit(GameEvent.StartGame, gameId);
+  }
+
+  stopGame() {
+    this.socket.emit(GameEvent.StopGame, this.currentGame.id);
+  }
+
+  makeMove(moveType: MoveType) {
+    this.socket.emit(GameEvent.MakeMove, this.currentGame.id, moveType);
+  }
 
 
 

@@ -7,6 +7,11 @@
     <uruit-welcome *ngIf="viewType == 'welcome'" (viewChanged)="onViewChanged($event)"></uruit-welcome>
     <uruit-battle-field *ngIf="viewType == 'battle-field'" (viewChanged)="onViewChanged($event)"></uruit-battle-field>
   </section>
+  <section>
+    <p *ngFor="let msg of messages">{{msg.text}}
+      <button (click)="deleteMessage(msg)">X</button>
+    </p>
+  </section>
   <footer>
     John Antonio
   </footer>

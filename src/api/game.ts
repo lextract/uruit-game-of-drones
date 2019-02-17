@@ -19,6 +19,7 @@ const router = Router();
 //         res.json("deleting user by id: " + req.params.id);
 //     });
 router.route('/game/request').post((req, res) => {
+    // TODO: borrar porque la sociccitud se hace por el socket
     res.json(gameBll.requestGame(req.body.defiant, req.body.opponent));
 });
 router.route('/game/start').post((req, res) => {
@@ -27,9 +28,9 @@ router.route('/game/start').post((req, res) => {
 router.route('/game/cancel').post((req, res) => {
     res.json(gameBll.cancelGame(req.body.id));
 })
-router.route('/game/end').post((req, res) => {
-    res.json(gameBll.endGame(req.body.id));
-})
+// router.route('/game/end').post((req, res) => {
+//     res.json(gameBll.endGame(req.body.id));
+// })
 
 export default router;
 // export default function (app: Application, socketServer: Server) {

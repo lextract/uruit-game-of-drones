@@ -7,21 +7,21 @@
   <input [(ngModel)]="opponentName" [disabled]="connectingOpponent" placeholder="opponent"><br>
   <button (click)="wantToPlayClick()" [hidden]="connectingOpponent">I want to play!</button>
   <p [hidden]="unavOppoHidden" class="centered">Unavailable opponent!</p>
-  
+
 </div>
 <br>
 <div class="central-panel">
   <div *ngFor="let game of requestedGames">
-    <div *ngIf="game.player1id == userName">
-      You have sent a battle requesto to '{{game.player2id}}' ...
-      <button (click)="cancelBattle(game.id)" href="#">Cancel</button>
+    <div *ngIf="game.defiant == userName">
+      You have sent a battle requesto to '{{game.opponent}}' ...
+      <button (click)="cancelGame(game.id)" href="#">Cancel</button>
     </div>
-    <div *ngIf="game.player1id != userName">
-        '{{game.player2id}}' wants to battle against you... 
-        <button (click)="startBattle(game.id)" href="#">Fight</button>
-      </div>
+    <div *ngIf="game.defiant != userName">
+      '{{game.defiant}}' wants to battle against you...
+      <button (click)="startGame(game.id)" href="#">Fight</button>
+    </div>
   </div>
-    <p [hidden]="requestedGames.length > 0" class="central-panel centered">You don't have battle requests</p>
+  <p [hidden]="requestedGames.length > 0" class="central-panel centered">You don't have battle requests</p>
 </div>
 <br><br>
 <div class="central-panel centered">

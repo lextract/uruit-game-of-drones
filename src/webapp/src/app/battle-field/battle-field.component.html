@@ -1,21 +1,31 @@
 <p class="centered">
   Yuo are fighting against {{opponentName}}
 </p>
-<div *ngIf="playing">
+<div>
   <p>Choose your movement</p>
   <div class="container">
-    <div class="img-paper img-block"></div>
-    <div class="img-rock img-block"></div>
-    <div class="img-scissors img-block"></div>
+    <div (click)="pickMove('P')" [class.move-picked]="pPicked" class="img-paper img-block"></div>
+    <div (click)="pickMove('R')" [class.move-picked]="rPicked" class="img-rock img-block"></div>
+    <div (click)="pickMove('S')" [class.move-picked]="sPicked" class="img-scissors img-block"></div>
   </div>
   <p>Waitint for a movement</p>
-  <div class="container img-block">
-    <div class="img-paper img-block"></div>
-    <div class="img-rock img-block"></div>
-    <div class="img-scissors img-block"></div>
+  <div class="container">
+    <div [class.move-picked]="pPickedOpp" class="img-paper img-block"></div>
+    <div [class.move-picked]="rPickedOpp" class="img-rock img-block"></div>
+    <div [class.move-picked]="sPickedOpp" class="img-scissors img-block"></div>
   </div>
 </div>
-<p class="centered">{{matchResult}}</p>
+<div *ngIf="showtNextMatch">
+  <button (click)="nextMatch()">Next match</button>
+</div>
+<p class="centered">
+  <span class="summary-tag">Total matches:</span>
+  <span class="summary-info">{{totalMatches}}</span>
+  <span class="summary-tag">{{playerName}} wins:</span>
+  <span class="summary-info">{{player1wins}}</span>
+  <span class="summary-tag">{{opponentName}} wins:</span>
+  <span class="summary-info">{{player2wins}}</span>
+</p>
 <div>
   <table>
     <thead>

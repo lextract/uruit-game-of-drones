@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { GameService } from '../game.service';
 import { Game } from '../../../../dto/Game';
+import { ViewType } from '../../../../enums';
 
 @Component({
   selector: 'uruit-welcome',
@@ -23,49 +24,68 @@ export class WelcomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.userName = this.authService.getPlayerInfo().name;
-    
+    this.userName = this.authService.currentUser.name;
     this.gameService.initRealTimeApp(this.userName);
-    this.gameService.newGamesObserver().subscribe(newGame => {
-      let game = newGame as Game;
-      if (game.id) this.requestedGames.push(game);
-    })
-    this.gameService.canceledGamesObserver().subscribe(gameId => {
-      let idxGame: number;
-      this.requestedGames.find((rg, idx) => {
-        let r = rg.id == gameId;
-        if (r) idxGame = idx;
-        return r;
-      });
-      if (typeof idxGame == 'number') 
-        this.requestedGames.splice(idxGame, 1);
-    })
-    this.gameService.openBattleFieldObserver().subscribe(oponent => {
-      this.viewChanged.emit('battle-field');
-    })
+    this.gameService.requestGameDispatcher.subscribe(newGame => this.requestGameListener(newGame));
+    this.gameService.cancelGameDispatcher.subscribe(gameId => this.cancelGameListener(gameId));
+    
+    //this.gameService.newGamesObserver().subscribe(this.onRequestedGame);
+
+    // this.gameService.newGamesObserver().subscribe(newGame => {
+    //   if (newGame.id) this.requestedGames.push(newGame);
+    // })
+
+    // this.gameService.canceledGamesObserver().subscribe(gameId => {
+    //   let idxGame: number;
+    //   this.requestedGames.find((rg, idx) => {
+    //     let r = rg.id == gameId;
+    //     if (r) idxGame = idx;
+    //     return r;
+    //   });
+    //   if (typeof idxGame == 'number') 
+    //     this.requestedGames.splice(idxGame, 1);
+    // })
+    // this.gameService.openBattleFieldObserver().subscribe(oponent => {
+    //   this.viewChanged.emit(ViewType.BattleField);
+    // })
   }
 
   wantToPlayClick() {
     //this.connectingOpponent = true;
     this.unavOppoHidden = true;
     this.gameService.requestGame(this.userName, this.opponentName)
-      .subscribe(game => {
-        if (game.id) this.requestedGames.push(game);
-        else this.unavOppoHidden = false;
-      })
+    // TODO: borrar lo de enseguida y delegar a onRequestedGame
+    // .subscribe(game => {
+    //   if (game.id) this.requestedGames.push(game);
+    //   else this.unavOppoHidden = false;
+    // })
   }
-  cancelBattle(gameId: number) {
-    this.gameService.cancelGame(gameId).subscribe();
+  requestGameListener(game: Game) {
+    console.log(game);
+    this.requestedGames.push(game);
+    //else this.unavOppoHidden = false; // TODO: mostar mensaje
   }
-  startBattle(gameId: number) {
-    this.gameService.startGame(gameId).subscribe();
+  cancelGame(gameId: number) {
+    this.gameService.cancelGame(gameId);
+  }
+  cancelGameListener(gameId: number) {
+    let idxGame: number;
+    this.requestedGames.find((rg, idx) => {
+      let r = rg.id == gameId;
+      if (r) idxGame = idx;
+      return r;
+    });
+    if (typeof idxGame == 'number')
+      this.requestedGames.splice(idxGame, 1);
+  }
+  startGame(gameId: number) {
+    this.gameService.startGame(gameId);
   }
 
   logOutClick() {
-    this.authService.logOutPlayer(this.authService.getPlayerInfo())
-      .subscribe(p => {
-        this.viewChanged.emit('logIn');
-      })
+    this.viewChanged.emit(ViewType.Login);
+    this.gameService.stopRealTimeApp();
+    this.authService.logOutPlayer();
   }
 
 }
