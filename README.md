@@ -1,27 +1,19 @@
-# GameOfDrones
+# Game of Drones
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.1.
+The "Game of Drones" is a game based on the popular Rock-Paper-Scissors game, this project intends to show the components of a real application ready for production, involving single-page-application, realtime communication by sockets, RESTful API, database read and write operations, unit testings and all about best practices to support development cycle. Currently the game is into `0.1.0` version and you can play in [this url](https://god-uruit.herokuapp.com/).
 
-## Development server
+## What can developers find?
+A bunch of technologies including:
+* Frontend using **Angular 2+** (typescript, Angular CLI)
+* Backend server to sockets, static and REST API using **ExpressJs** (typscript)
+* Realtime application using **Socket IO**
+* A ready package to deploy in **Heroku**
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Comming soon:
 
-## Code scaffolding
+* Data storage using NO-SQL **MongoDB** database
+* Unit testings using Karma
+* End-to-end testings using Protractor
+* Better code organization
+* Code documentation
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
