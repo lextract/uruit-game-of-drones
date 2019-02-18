@@ -7,6 +7,11 @@ import { MoveType } from '../enums';
 let gamesCache: Map<number, Game> = new Map();
 
 export function requestGame(defiant: string, opponent: string) {
+    opponent = opponent.toLowerCase();
+    if (typeof opponent != "string" || opponent.length < 3 || opponent.length > 20) {
+        playerBll.sendMessage(defiant, 'Invalid player name.')
+        return;
+    }
     let newGame = { defiant: defiant, opponent: opponent } as Game;
     if (playerBll.isLoggedIn(opponent)) {
         newGame.id = createGame(defiant, opponent);
@@ -76,16 +81,14 @@ export function makeMove(gameId: number, playerId: string, moveType: MoveType) {
 
     if (game.defiant == playerId) {
         game.currentMatch.player1move = moveType;
-        //playerBll.notifyMove(game.opponent, moveType);
     }
     else {
         game.currentMatch.player2move = moveType;
-        //playerBll.notifyMove(game.defiant, moveType);
     }
 
     if (game.currentMatch.player1move && game.currentMatch.player2move) {
         determineWinner(game.currentMatch, game.defiant, game.opponent);
-        playerBll.notifyMatchResult(game.currentMatch,game.defiant,game.opponent);
+        playerBll.notifyMatchResult(game.currentMatch, game.defiant, game.opponent);
         // TODO: fill up statistics about matches
         game.currentMatch = undefined;
     }

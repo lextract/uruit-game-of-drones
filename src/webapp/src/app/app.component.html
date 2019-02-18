@@ -1,4 +1,4 @@
-<div class="central-panel">
+<div class="main-panel">
   <header>
     <h1 class="centered">Game of Drones</h1>
   </header>
@@ -7,10 +7,10 @@
     <uruit-welcome *ngIf="viewType == 'welcome'" (viewChanged)="onViewChanged($event)"></uruit-welcome>
     <uruit-battle-field *ngIf="viewType == 'battle-field'" (viewChanged)="onViewChanged($event)"></uruit-battle-field>
   </section>
-  <section>
-    <p *ngFor="let msg of messages">{{msg.text}}
+  <section class="panel-message">
+    <div *ngFor="let msg of messages" >{{msg.text}}
       <button (click)="deleteMessage(msg)">X</button>
-    </p>
+    </div>
   </section>
   <footer>
     John Antonio

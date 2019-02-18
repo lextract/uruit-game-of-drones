@@ -24,7 +24,7 @@ export class BattleFieldComponent implements OnInit {
   player2wins: number = 0;
   showtNextMatch: boolean;
   currentMove: MoveType;
-  //rounds
+  messageResult: string;
   @Output() viewChanged = new EventEmitter<string>();
 
   constructor(
@@ -35,31 +35,28 @@ export class BattleFieldComponent implements OnInit {
     if (this.gameService.currentGame.defiant == this.authService.currentUser.name)
       this.opponentName = this.gameService.currentGame.opponent;
     else this.opponentName = this.gameService.currentGame.defiant;
-    //this.gameService.stopGameDispatcher.subscribe(game => this.viewChanged)
-
   }
 
   ngOnInit() {
-    // this.gameService.closeBattleFieldObserver().subscribe(oponent => {
-    //   this.viewChanged.emit('welcome');
-    // })
     this.gameService.matchResultDispatcher.subscribe(match => {
-      console.log('match recibido');
-      console.log(match);
       this.showtNextMatch = true;
       this.totalMatches += 1;
-      if (match.winner == this.playerName)
+      if (match.winner == this.playerName) {
         this.player1wins += 1;
-      if (match.winner == this.opponentName)
-        this.player1wins += 1;
-      if (match.player1move == match.player2move){
+        this.messageResult = `The player "${match.winner}" wins!`;
+      }
+      if (match.winner == this.opponentName) {
+        this.player2wins += 1;
+        this.messageResult = `The player "${match.winner}" wins!`;
+      }
+      if (match.player1move == match.player2move) {
         this.pickMoveOpponent(match.player2move);
+        this.messageResult = `Nobody wins!`;
       }
       else if (match.player1move == this.currentMove) {
         this.pickMoveOpponent(match.player2move);
       }
       else this.pickMoveOpponent(match.player1move);
-        
     })
   }
 
@@ -88,14 +85,14 @@ export class BattleFieldComponent implements OnInit {
   private pickMoveOpponent(moveType: MoveType) {
     switch (moveType) {
       case MoveType.Paper:
-      this.pPickedOpp = true;
-      break;
+        this.pPickedOpp = true;
+        break;
       case MoveType.Rock:
-      this.rPickedOpp = true;
-      break;
+        this.rPickedOpp = true;
+        break;
       case MoveType.Scissors:
-      this.sPickedOpp = true;
-      break;
+        this.sPickedOpp = true;
+        break;
     }
   }
 

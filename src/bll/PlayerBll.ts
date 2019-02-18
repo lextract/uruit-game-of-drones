@@ -5,21 +5,23 @@ import { Socket } from 'socket.io';
 import { Message } from '../dto/Message';
 import { Match } from '../dto/Match';
 
-class PlayerLogged extends Player {
-    playing: boolean;
-    socket: Socket;
-}
+let playersCache: Map<string, Player> = new Map();
 
-let playersCache: Map<string, PlayerLogged> = new Map();
-
-export function logInPlayer(playerId: string) : Player {
-    if (isLoggedIn(playerId)) {
-        return;
+export function logInPlayer(name: string) {
+    let result = {} as Message;
+    if (typeof name != "string" || name.length < 3 || name.length > 20) {
+        result.text = "Invalid user name.";
+        return result;
     }
-    let p = <PlayerLogged>{ name: playerId };
+    name = name.toLowerCase();
+    if (isLoggedIn(name)) {
+        result.text = `The user "${name}" is already logged in.`;
+        return result;
+    }
+    let p = new Player();
+    p.name = name;
     playersCache.set(p.name, p);
     return p;
-    //return { sessionId: Math.random().toString() }
 }
 
 export function isLoggedIn(playerId: string) {
@@ -27,9 +29,14 @@ export function isLoggedIn(playerId: string) {
 }
 
 export function logOutPlayer(playerId: string) {
-    if (playersCache.has(playerId)) {
-        if(playersCache.get(playerId).socket)
+    let player = playersCache.get(playerId);
+    if (player) {
+        if(player.socket) {
+            //if (player.playing) 
+            // TODO: implement close game when player is playing
             playersCache.get(playerId).socket.disconnect();
+        }
+            
     }
     return playersCache.delete(playerId);
 }
@@ -50,13 +57,6 @@ export function setSocket(playerId: string, socket: Socket) {
     if (player)
         player.socket = socket;
     else socket.disconnect();
-}
-
-export function notifyNewBattle(gameId: number, defiant: string, opponent: string) {
-    let player = playersCache.get(opponent);
-    if (player) {
-        player.socket.emit(GameEvent.NewBattle, gameId, defiant, opponent);
-    }
 }
 
 export function notifyRequestedGame(game: Game) {
@@ -87,9 +87,6 @@ export function closeBattleField(game: Game) {
     p2s.socket.emit(GameEvent.StopGame, game);
 }
 
-export function notifyMove(playerId: string, moveType: MoveType) {
-    //playersCache.get(playerId).socket.emit(GameEvent.NotifyMove, moveType);
-}
 export function notifyMatchResult(match: Match, player1: string, player2: string) {
     playersCache.get(player1).socket.emit(GameEvent.NotifyMatchResult, match);
     playersCache.get(player2).socket.emit(GameEvent.NotifyMatchResult, match);

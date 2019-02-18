@@ -1,29 +1,27 @@
-<div class="central-panel centered">
-  Welcome {{userName}}
-</div>
+<p class="central-panel centered">
+  Welcome <span class="color-green">{{userName}}</span>!!!
+</p>
 <div class="central-panel centered">
   <p>Do you want a battle?</p>
-  <p>Send a request to your opponent</p>
+  <div>Send a request to your opponent</div>
   <input [(ngModel)]="opponentName" [disabled]="connectingOpponent" placeholder="opponent"><br>
-  <button (click)="wantToPlayClick()" [hidden]="connectingOpponent">I want to play!</button>
-  <p [hidden]="unavOppoHidden" class="centered">Unavailable opponent!</p>
-
+  <button (click)="wantToPlayClick()" [hidden]="connectingOpponent" class="button-green">I want to play!</button>
 </div>
 <br>
 <div class="central-panel">
-  <div *ngFor="let game of requestedGames">
+  <div *ngFor="let game of requestedGames" class="panel-message">
     <div *ngIf="game.defiant == userName">
       You have sent a battle requesto to '{{game.opponent}}' ...
-      <button (click)="cancelGame(game.id)" href="#">Cancel</button>
+      <button (click)="cancelGame(game.id)" class="button-red-s">Cancel</button>
     </div>
     <div *ngIf="game.defiant != userName">
       '{{game.defiant}}' wants to battle against you...
-      <button (click)="startGame(game.id)" href="#">Fight</button>
+      <button (click)="startGame(game.id)" class="button-green-s">Fight</button>
     </div>
   </div>
   <p [hidden]="requestedGames.length > 0" class="central-panel centered">You don't have battle requests</p>
 </div>
 <br><br>
 <div class="central-panel centered">
-  <button (click)="logOutClick()" [disabled]="connectingOpponent">Log Out</button>
+  <button (click)="logOutClick()" [disabled]="connectingOpponent" class="button-red">Log Out</button>
 </div>

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { ViewType } from '../../../../enums';
+import { Player } from '../../../../dto/Player';
 
 @Component({
   selector: 'uruit-login',
@@ -24,7 +25,7 @@ export class LoginComponent implements OnInit {
 
   loginClick() {
     this.infoShowed = false;
-    this.authService.logInPlayer({ name: this.userName })
+    this.authService.logInPlayer({ name: this.userName } as Player)
       .subscribe(player => {
         if (player.name) {
           this.viewChanged.emit(ViewType.Welcome);

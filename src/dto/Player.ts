@@ -1,4 +1,7 @@
+import { Socket } from 'socket.io';
+
 export class Player {
     name: string;
-    available?: boolean;
+    playing: boolean;
+    socket: Socket;
 }

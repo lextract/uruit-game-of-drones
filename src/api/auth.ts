@@ -1,13 +1,14 @@
 import { Router, Request, Response } from 'express';
 import * as playerBll from '../bll/PlayerBll';
+import { Player } from '../dto/Player';
 
 const router = Router();
 
 router.route('/auth')
     .post(function (req: Request, res: Response) {
-        let player = playerBll.logInPlayer(req.body.name);
-        if (player) res.status(201).json(player);
-        else res.status(204).json({});
+        let result = playerBll.logInPlayer(req.body.name);
+        if (result instanceof Player) res.status(201).json(result);
+        else res.status(204).json(result);
     });
 router.route('/auth/:name')
     .delete(function (req: Request, res: Response) {

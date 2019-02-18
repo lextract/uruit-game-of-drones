@@ -12,9 +12,6 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
-//let playerInfo: Player;
-//let _currentUser: Player;
-
 @Injectable({
   providedIn: 'root'
 })
@@ -30,7 +27,7 @@ export class AuthService {
     if (!this._currentUser) {
       let authKey = window.sessionStorage.getItem(AUTH_KEY);
       if (authKey) {
-        this._currentUser = { name: authKey };
+        this._currentUser = { name: authKey } as Player;
       }
     }
     this._onPlayerLogged = new Observable<Player>(observer => {

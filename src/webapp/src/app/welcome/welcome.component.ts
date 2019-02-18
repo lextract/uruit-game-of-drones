@@ -28,42 +28,14 @@ export class WelcomeComponent implements OnInit {
     this.gameService.initRealTimeApp(this.userName);
     this.gameService.requestGameDispatcher.subscribe(newGame => this.requestGameListener(newGame));
     this.gameService.cancelGameDispatcher.subscribe(gameId => this.cancelGameListener(gameId));
-    
-    //this.gameService.newGamesObserver().subscribe(this.onRequestedGame);
-
-    // this.gameService.newGamesObserver().subscribe(newGame => {
-    //   if (newGame.id) this.requestedGames.push(newGame);
-    // })
-
-    // this.gameService.canceledGamesObserver().subscribe(gameId => {
-    //   let idxGame: number;
-    //   this.requestedGames.find((rg, idx) => {
-    //     let r = rg.id == gameId;
-    //     if (r) idxGame = idx;
-    //     return r;
-    //   });
-    //   if (typeof idxGame == 'number') 
-    //     this.requestedGames.splice(idxGame, 1);
-    // })
-    // this.gameService.openBattleFieldObserver().subscribe(oponent => {
-    //   this.viewChanged.emit(ViewType.BattleField);
-    // })
   }
 
   wantToPlayClick() {
-    //this.connectingOpponent = true;
     this.unavOppoHidden = true;
     this.gameService.requestGame(this.userName, this.opponentName)
-    // TODO: borrar lo de enseguida y delegar a onRequestedGame
-    // .subscribe(game => {
-    //   if (game.id) this.requestedGames.push(game);
-    //   else this.unavOppoHidden = false;
-    // })
   }
   requestGameListener(game: Game) {
-    console.log(game);
     this.requestedGames.push(game);
-    //else this.unavOppoHidden = false; // TODO: mostar mensaje
   }
   cancelGame(gameId: number) {
     this.gameService.cancelGame(gameId);
